@@ -41,8 +41,10 @@ if st.sidebar.button("🔔 Probar Conexión"):
     if telegram_token and telegram_chat_id:
         url = f"https://api.telegram.org/bot{telegram_token}/sendMessage"
         res = requests.post(url, json={"chat_id": telegram_chat_id, "text": "✅ *Conexión Cuantitativa Activa*", "parse_mode": "Markdown"})
-        st.sidebar.success("¡Conectado!") if res.status_code == 200 else st.sidebar.error("Error de credenciales")
-
+        if res.status_code == 200:
+    st.sidebar.success("¡Conectado!")
+else:
+    st.sidebar.error(f"Error: {res.json().get('description', 'Credenciales inválidas')}")
 def enviar_telegram(mensaje):
     if not telegram_token or not telegram_chat_id:
         return
