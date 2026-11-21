@@ -33,8 +33,8 @@ cap_qqq = capital_total * (pct_qqq / 100)
 riesgo_porcentaje = st.sidebar.slider("Riesgo Máximo por Operación (%)", 0.5, 3.0, 1.0, step=0.5)
 
 st.sidebar.header("📱 Configuración de Telegram")
-telegram_token = st.sidebar.text_input("Bot Token", type="password", placeholder="123456:ABC-DEF...")
-telegram_chat_id = st.sidebar.text_input("Chat ID", placeholder="987654321")
+telegram_token = st.sidebar.text_input("Bot Token", type="password", value=token_por_defecto, placeholder="123456:ABC-DEF...")
+telegram_chat_id = st.sidebar.text_input("Chat ID", value=chat_por_defecto, placeholder="987654321")
 auto_telegram = st.sidebar.checkbox("🚀 Enviar alertas a Telegram", value=True)
 
 if st.sidebar.button("🔔 Probar Conexión"):
@@ -45,6 +45,8 @@ if st.sidebar.button("🔔 Probar Conexión"):
             st.sidebar.success("¡Conectado!")
         else:
             st.sidebar.error(f"Error: {res.json().get('description', 'Credenciales inválidas')}")
+
+def enviar_telegram(mensaje):
     if not telegram_token or not telegram_chat_id:
         return
     url = f"https://api.telegram.org/bot{telegram_token}/sendMessage"
@@ -52,7 +54,6 @@ if st.sidebar.button("🔔 Probar Conexión"):
         requests.post(url, json={"chat_id": telegram_chat_id, "text": mensaje, "parse_mode": "Markdown"}, timeout=5)
     except:
         pass
-
 if "alertas_enviadas" not in st.session_state:
     st.session_state.alertas_enviadas = set()
 
